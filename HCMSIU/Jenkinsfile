@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    stages {
+        stage('Clone Repository') {
+            steps {
+                echo 'Cloning the repository'
+                git 'https://gitlab.com/ltmichael52/testjenkinspart2.git'
+            }
+        }
+        //
+        // stage('Build Docker Image') {
+        //     steps {
+        //         echo 'Building the Docker image'
+        //         withDockerRegistry(credentialsId: 'docker-hub', url: 'https://index.docker.io/v1/') {
+        //             // Use the correct path for the Dockerfile and build context
+        //             bat 'dir TestJenkinsPart2'
+        //             dir('TestJenkinsPart2') {
+        //                 bat 'docker build -t lemichael52/testjenkins:v1 -f Dockerfile .' // Use Dockerfile from current dir
+        //             }   
+        //             bat 'docker push lemichael52/testjenkins:v1'
+        //         }
+        //     }
+        // }
+        // stage('Check SSH Version') {
+        //     steps {
+        //         echo 'Checking SSH version...'
+        //         bat 'ssh -V' // This will output the SSH version
+        //     }
+        // }
+        // stage('SSH Connectivity Test') {
+        //     steps {
+        //         sshagent(['ssh-remote']) { // Replace 'ssh-remote' with your actual credentials ID
+        //             echo 'Testing SSH connectivity...'
+        //             bat 'ssh -o StrictHostKeyChecking=no root@66.42.43.15 echo "Connection successful!"' 
+        //         }
+        //     }
+        // }
+
+        // stage('SSH Server') {
+        //     steps{
+        //         sshagent(['ssh-remote']){
+        //             sh 'ssh -o StrictHostKeyChecking=no -l root 66.42.43.15 touch test.txt'
+        //         }
+        //     }
+        // }
+    }
+}
