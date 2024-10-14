@@ -7,7 +7,7 @@ pipeline {
         DOCKER_IMAGE = "lemichael52/hcmsiu:v2"
         CONTAINER_NAME = "hcmsiu" // Replace with your Docker container name
     }
-
+//
     stages {
         stage('Checkout') {
             steps {
