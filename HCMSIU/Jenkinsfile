@@ -1,48 +1,63 @@
 pipeline {
     agent any
+
+    environment {
+        // Docker Hub credentials
+        DOCKER_HUB_REPO = 'your-dockerhub-username/your-repo-name'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials-id' // Set Jenkins Docker Hub credentials ID here
+        IMAGE_TAG = "${env.BUILD_ID}" // Unique tag for the Docker image (you can use commit hash instead)
+        DOCKER_IMAGE = "${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+        CONTAINER_NAME = 'your-container-name' // Replace with your Docker container name
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                echo 'Cloning the repository'
-                git 'https://gitlab.com/ltmichael52/testjenkinspart2.git'
+                // Pull the code from a private GitHub repository
+                git branch: 'master', url: 'https://github.com/ltmichael52/HCMSIU.git', credentialsId: 'PAT_Jenkins'
             }
         }
-        
-        //
-        // stage('Build Docker Image') {
-        //     steps {
-        //         echo 'Building the Docker image'
-        //         withDockerRegistry(credentialsId: 'docker-hub', url: 'https://index.docker.io/v1/') {
-        //             // Use the correct path for the Dockerfile and build context
-        //             bat 'dir TestJenkinsPart2'
-        //             dir('TestJenkinsPart2') {
-        //                 bat 'docker build -t lemichael52/testjenkins:v1 -f Dockerfile .' // Use Dockerfile from current dir
-        //             }   
-        //             bat 'docker push lemichael52/testjenkins:v1'
-        //         }
-        //     }
-        // }
-        // stage('Check SSH Version') {
-        //     steps {
-        //         echo 'Checking SSH version...'
-        //         bat 'ssh -V' // This will output the SSH version
-        //     }
-        // }
-        // stage('SSH Connectivity Test') {
-        //     steps {
-        //         sshagent(['ssh-remote']) { // Replace 'ssh-remote' with your actual credentials ID
-        //             echo 'Testing SSH connectivity...'
-        //             bat 'ssh -o StrictHostKeyChecking=no root@66.42.43.15 echo "Connection successful!"' 
-        //         }
-        //     }
-        // }
 
-        // stage('SSH Server') {
-        //     steps{
-        //         sshagent(['ssh-remote']){
-        //             sh 'ssh -o StrictHostKeyChecking=no -l root 66.42.43.15 touch test.txt'
-        //         }
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    // Log in to Docker Hub and push the image
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh "docker push ${DOCKER_IMAGE}"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy New Image Locally') {
+            steps {
+                script {
+                    // Stop and remove the old container, pull the new image, and start a new container
+                    sh """
+                    docker pull ${DOCKER_IMAGE} &&
+                    docker stop ${CONTAINER_NAME} || true &&
+                    docker rm ${CONTAINER_NAME} || true &&
+                    docker run -d --name ${CONTAINER_NAME} -p 80:80 ${DOCKER_IMAGE}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up Docker images on Jenkins
+            sh "docker rmi ${DOCKER_IMAGE} || true"
+        }
     }
 }
