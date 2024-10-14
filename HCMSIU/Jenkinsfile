@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Pull the code from a private GitHub repository
-                git branch: 'master', url: 'https://github.com/ltmichael52/HCMSIU.git', credentialsId: "${PAT_CREDENTIALS_ID}"
+                git url: 'https://github.com/ltmichael52/HCMSIU.git', credentialsId: "${PAT_CREDENTIALS_ID}"
             }
         }
 
