@@ -4,8 +4,8 @@ pipeline {
         // Docker Hub credentials
         PAT_CREDENTIALS_ID = "PAT_Jenkins"
         DOCKER_CREDENTIALS_ID = "docker-hub" // Set Jenkins Docker Hub credentials ID here
-        DOCKER_IMAGE = "itsnghiatime/gym93:v1.2" // Change to your desired image name and tag
-        CONTAINER_NAME = "gym93-container" // Replace with your Docker container name
+        DOCKER_IMAGE = "lemichael52/hcmsiu:v1.2" // Change to your desired image name and tag
+        CONTAINER_NAME = "hcmsiu" // Replace with your Docker container name
     }
     
     stages {
