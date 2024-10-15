@@ -13,6 +13,7 @@ pipeline {
             steps {
                 // Pull the code from a private GitHub repository
                 git url: 'https://github.com/ltmichael52/HCMSIU.git', credentialsId: "${PAT_CREDENTIALS_ID}"
+                echo "Update git repo complete"
             }
         }
 // 
