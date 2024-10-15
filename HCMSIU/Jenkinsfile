@@ -68,8 +68,12 @@ pipeline {
         always {
             script {
                 echo "Cleaning up Docker images on Jenkins..."
-                sh "docker rmi ${DOCKER_IMAGE} || true"
+                // Check if the image is being used and remove it forcefully if necessary
+                sh """
+                docker rmi -f ${DOCKER_IMAGE} || true
+                """
             }
         }
     }
+
 }
