@@ -11,8 +11,18 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Pull the code from a private GitHub repository
-                git url: 'https://github.com/ltmichael52/HCMSIU.git', credentialsId: "${PAT_CREDENTIALS_ID}"
+                // // Pull the code from a private GitHub repository
+                // git url: 'https://github.com/ltmichael52/HCMSIU.git', credentialsId: "${PAT_CREDENTIALS_ID}"
+                 script {
+                    // Use credentials to pull from a private GitHub repository
+                    withCredentials([string(credentialsId: "${PAT_CREDENTIALS_ID}", variable: 'GITHUB_TOKEN')]) {
+                        // Clone the repository using a shell command
+                        sh '''
+                        git config --global credential.helper store
+                        git clone ${GIT_REPO}
+                        '''
+                    }
+                }
             }
         }
 
