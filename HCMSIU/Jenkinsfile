@@ -4,7 +4,7 @@ pipeline {
         // Docker Hub credentials
         PAT_CREDENTIALS_ID = "PAT_Jenkins"
         DOCKER_CREDENTIALS_ID = "docker-hub" // Set Jenkins Docker Hub credentials ID here
-        DOCKER_IMAGE = "lemichael52/hcmsiu:v1.2" // Change to your desired image name and tag
+        DOCKER_IMAGE = "lemichael52/hcmsiu:v1" // Change to your desired image name and tag
         CONTAINER_NAME = "hcmsiu" // Replace with your Docker container name
     }
     
@@ -52,7 +52,7 @@ pipeline {
                         docker pull ${DOCKER_IMAGE} &&
                         docker stop ${CONTAINER_NAME} || true &&
                         docker rm ${CONTAINER_NAME} || true &&
-                        docker run -d --name ${CONTAINER_NAME} -p 80:80 ${DOCKER_IMAGE}
+                        docker run -d --name ${CONTAINER_NAME} -p 8081:80 -e ASPNETCORE_URLS="http://0.0.0.0:80" ${DOCKER_IMAGE}
                         """
                         echo "Deployment complete."
                     } catch (Exception e) {
