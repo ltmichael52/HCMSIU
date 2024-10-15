@@ -64,16 +64,16 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            script {
-                echo "Cleaning up Docker images on Jenkins..."
-                // Check if the image is being used and remove it forcefully if necessary
-                sh """
-                docker rmi -f ${DOCKER_IMAGE} || true
-                """
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         script {
+    //             echo "Cleaning up Docker images on Jenkins..."
+    //             // Check if the image is being used and remove it forcefully if necessary
+    //             sh """
+    //             docker rmi -f ${DOCKER_IMAGE} || true
+    //             """
+    //         }
+    //     }
+    // }
 
 }
