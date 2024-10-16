@@ -4,7 +4,7 @@ pipeline {
         // Docker Hub credentials
         PAT_CREDENTIALS_ID = "PAT_Jenkins"
         DOCKER_CREDENTIALS_ID = "docker-hub" // Set Jenkins Docker Hub credentials ID here
-          your desired image name and tag
+        DOCKER_IMAGE = "lemichael52/hcmsiu:v1" // Change to your desired image name and tag
         CONTAINER_NAME = "hcmsiu" // Replace with your Docker container name
     }
     
@@ -16,7 +16,7 @@ pipeline {
                 echo "Update git repo complete"
             }
         }
-        //
+
         stage('Build Then Push Docker Image to Docker Hub') {
             steps {
                 script {
